@@ -1,14 +1,15 @@
 === WPYAA's Alipay Wechat(微信 支付宝) for WooCommerce ===
-Contributors: 板鸭WordPress
-Tags: alipay,wechat,微信，支付，支付宝，退款，ecommerce, e-commerce,stripe, woo commerce, woo
-Requires at least: 4.9
-Tested up to: 5.2
-Requires PHP: 5.6
-Stable tag: 1.0.0
-License: GUN LGPLv3
-License URI: https://www.gnu.org/licenses/lgpl-3.0.html
 
-WooCommerce 微信支付(支持：PC电脑端、手机浏览器、微信客户端)支付+退款，支付宝(支持：PC电脑端、手机浏览器)支付+退款
+- Contributors: 板鸭WordPress
+- Tags: alipay,wechat,微信，支付，支付宝，退款，ecommerce, e-commerce,stripe, woo commerce, woo
+- Requires at least: 4.9
+- Tested up to: 5.2
+- Requires PHP: 5.6
+- Stable tag: 1.0.0
+- License: GUN LGPLv3
+- License URI: https://www.gnu.org/licenses/lgpl-3.0.html
+
+ WooCommerce 微信支付(支持：PC电脑端、手机浏览器、微信客户端)支付+退款，支付宝(支持：PC电脑端、手机浏览器)支付+退款
 
 == 插件描述 ==
 
@@ -30,6 +31,7 @@ WooCommerce 微信支付(支持：PC电脑端、手机浏览器、微信客户�
 - 支持支付宝退款
 
 = 更多服务 =
+
 板鸭WordPress提供优质的（插件/主题）售后+维护+bug修复服务+二次开发+定制等wordpress相关开发服务。如有需求，请访问官网[板鸭WordPress](https://www.wpyaa.com)
 
 == 安装要求 ==
