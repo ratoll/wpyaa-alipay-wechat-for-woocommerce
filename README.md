@@ -1,11 +1,10 @@
 === WPYAA's Alipay Wechat(微信 支付宝) for WooCommerce ===
 
 - Contributors: 板鸭WordPress
-- Tags: alipay,wechat,微信，支付，支付宝，退款，ecommerce, e-commerce,stripe, woo commerce, woo
+- Tags: alipay,wechat,微信,支付,支付宝,退款,WooCommerce,ecommerce,e-commerce,stripe,woo commerce,woo
 - Requires at least: 4.9
-- Tested up to: 5.2
+- Tested up to: 5.5.1
 - Requires PHP: 5.6
-- Stable tag: 1.0.0
 - License: GUN LGPLv3
 - License URI: https://www.gnu.org/licenses/lgpl-3.0.html
 

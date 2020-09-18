@@ -441,6 +441,8 @@ class Wpyaa_WC_AW_Wechat_Controller extends Wpyaa_WC_AW_Controller
      * @return WP_REST_Response
      */
     public function notify(){
+        //get the data (xml),
+        // validate all params at line:465
         $xml =isset($GLOBALS['HTTP_RAW_POST_DATA'])?$GLOBALS['HTTP_RAW_POST_DATA']:'';
         if(empty($xml)){
             $xml = file_get_contents("php://input");
@@ -453,14 +455,24 @@ class Wpyaa_WC_AW_Wechat_Controller extends Wpyaa_WC_AW_Controller
                         </xml>');
         }
 
-
         $request = Wpyaa_WC_AW_Wechat::xmlToArray($xml) ;
+        foreach ($request as $k=>$v){
+            //keep the request data is safe
+            $request[$k] = sanitize_text_field($v);
+        }
+
+        $sign =isset($request['sign'])?$request['sign']:null;
+        if($sign!==Wpyaa_WC_AW_Wechat::sign($request)){
+            wc_get_logger()->error('微信支付回调：签名验证失败'.print_r($request,true));
+            return new Wpyaa_WC_AW_Content_Response('<xml>
+                          <return_code><![CDATA[FAIL]]></return_code>
+                          <return_msg><![CDATA[签名验证错误]]></return_msg>
+                        </xml>');
+        }
 
         $out_trade_no = isset($request['out_trade_no'])?$request['out_trade_no']:null;
         $transaction_id = isset($request['transaction_id'])?$request['transaction_id']:null;
 
-
-        $sign =isset($request['sign'])?$request['sign']:null;
         $wc_order_id = substr($out_trade_no,14);
         $order = wc_get_order($wc_order_id);
         if(!$order){
@@ -468,14 +480,6 @@ class Wpyaa_WC_AW_Wechat_Controller extends Wpyaa_WC_AW_Controller
             return new Wpyaa_WC_AW_Content_Response('<xml>
                           <return_code><![CDATA[FAIL]]></return_code>
                           <return_msg><![CDATA[数据请求错误]]></return_msg>
-                        </xml>');
-        }
-
-        if($sign!==Wpyaa_WC_AW_Wechat::sign($request)){
-            wc_get_logger()->error('微信支付回调：签名验证失败'.print_r($request,true));
-            return new Wpyaa_WC_AW_Content_Response('<xml>
-                          <return_code><![CDATA[FAIL]]></return_code>
-                          <return_msg><![CDATA[签名验证错误]]></return_msg>
                         </xml>');
         }
 

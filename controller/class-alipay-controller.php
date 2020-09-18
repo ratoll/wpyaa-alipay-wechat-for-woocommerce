@@ -100,25 +100,33 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
 
     /**
      * 支付宝页面
+     * @param WP_REST_Request $request
      * @return WP_REST_Response
      */
-    public function back(){
-        $request = stripslashes_deep($_GET) ;
-        $out_trade_no = isset($request['out_trade_no'])?$request['out_trade_no']:null;
-        $transaction_id = isset($request['trade_no'])?$request['trade_no']:null;
-        $trade_status = isset($request['trade_status'])?$request['trade_status']:null;
+    public function back($request){
+        //we must be get all query params ,then generate the sign(validate the all data is safe)
+        // @see 114 line
+        $requestData = $request->get_query_params() ;
+        foreach ($requestData as $k=>$v){
+            $requestData[$k] = sanitize_text_field($v);
+        }
+
+        //validate all query params is valid by rsa2
+        if(!Wpyaa_WC_AW_Alipay::validateSign($requestData)){
+            wc_get_logger()->error('支付宝回调：签名验证失败'.print_r($requestData,true));
+            wc_add_notice("支付宝回调：签名信息异常！",'error');
+            return new Wpyaa_WC_AW_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
+        }
+
+        $out_trade_no = isset($requestData['out_trade_no'])?$requestData['out_trade_no']:null;
+        $transaction_id = isset($requestData['trade_no'])?$requestData['trade_no']:null;
+        $trade_status = isset($requestData['trade_status'])?$requestData['trade_status']:null;
 
         $wc_order_id = substr($out_trade_no,14);
         $order = wc_get_order($wc_order_id);
         if(!$order){
-            wc_get_logger()->error('支付宝回调：订单信息异常'.print_r($request,true));
+            wc_get_logger()->error('支付宝回调：订单信息异常'.print_r($requestData,true));
             wc_add_notice("支付宝回调：订单信息异常！",'error');
-            return new Wpyaa_WC_AW_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
-        }
-
-        if(!Wpyaa_WC_AW_Alipay::validateSign($request)){
-            wc_get_logger()->error('支付宝回调：签名验证失败'.print_r($request,true));
-            wc_add_notice("支付宝回调：签名信息异常！",'error');
             return new Wpyaa_WC_AW_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
         }
 
@@ -127,7 +135,7 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
                 $order->payment_complete($transaction_id);
             }
         } catch (Exception $e) {
-            wc_get_logger()->error('支付宝回调：系统异常'.$e->getMessage().print_r($request,true));
+            wc_get_logger()->error('支付宝回调：系统异常'.$e->getMessage().print_r($requestData,true));
             wc_add_notice("支付宝回调：系统异常！",'error');
             return new Wpyaa_WC_AW_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
         }
@@ -137,24 +145,31 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
 
     /**
      * 支付宝页面
+     * @param WP_REST_Request $request
      * @return WP_REST_Response
      */
-    public function notify(){
-        $request = stripslashes_deep($_POST) ;
+    public function notify($request){
+        //we must be get all query params ,then generate the sign(validate the all data is safe)
+        //@see 159 line
+        $requestData = $request->get_body_params() ;
+        foreach ($requestData as $k=>$v){
+            $requestData[$k] = sanitize_text_field($v);
+        }
 
-        $out_trade_no = isset($request['out_trade_no'])?$request['out_trade_no']:null;
-        $transaction_id = isset($request['trade_no'])?$request['trade_no']:null;
-        $trade_status = isset($request['trade_status'])?$request['trade_status']:null;
+        //validate all query params is valid by rsa2
+        if(!Wpyaa_WC_AW_Alipay::validateSign($requestData)){
+            wc_get_logger()->error('支付宝回调：签名验证失败'.print_r($requestData,true));
+            return new Wpyaa_WC_AW_Content_Response('failed');
+        }
+
+        $out_trade_no = isset($requestData['out_trade_no'])?$requestData['out_trade_no']:null;
+        $transaction_id = isset($requestData['trade_no'])?$requestData['trade_no']:null;
+        $trade_status = isset($requestData['trade_status'])?$requestData['trade_status']:null;
 
         $wc_order_id = substr($out_trade_no,14);
         $order = wc_get_order($wc_order_id);
         if(!$order){
-            wc_get_logger()->error('支付宝回调：订单信息异常'.print_r($request,true));
-            return new Wpyaa_WC_AW_Content_Response('failed');
-        }
-
-        if(!Wpyaa_WC_AW_Alipay::validateSign($request)){
-            wc_get_logger()->error('支付宝回调：签名验证失败'.print_r($request,true));
+            wc_get_logger()->error('支付宝回调：订单信息异常'.print_r($requestData,true));
             return new Wpyaa_WC_AW_Content_Response('failed');
         }
 
@@ -163,7 +178,7 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
                 $order->payment_complete($transaction_id);
             }
         } catch (Exception $e) {
-            wc_get_logger()->error('支付宝回调：系统异常'.$e->getMessage().print_r($request,true));
+            wc_get_logger()->error('支付宝回调：系统异常'.$e->getMessage().print_r($requestData,true));
             return new Wpyaa_WC_AW_Content_Response('failed');
         }
 
