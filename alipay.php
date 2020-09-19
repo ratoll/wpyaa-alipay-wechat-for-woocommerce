@@ -1,6 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit;
-class Wpyaa_WC_AW_Alipay extends WC_Payment_Gateway {
+class Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay extends WC_Payment_Gateway {
     /**
 	 * 支付说明
      * @var string
@@ -9,13 +9,13 @@ class Wpyaa_WC_AW_Alipay extends WC_Payment_Gateway {
 
     /**
 	 * 微信支付网关
-     * @var Wpyaa_WC_AW_Alipay
+     * @var Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay
      */
     private static $_instance;
 
     /**
 	 * 返回微信支付网关实例
-     * @return Wpyaa_WC_AW_Alipay
+     * @return Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay
      */
     public static function instance(){
 		if(!self::$_instance){
@@ -25,21 +25,21 @@ class Wpyaa_WC_AW_Alipay extends WC_Payment_Gateway {
 	}
 
     /**
-     * Wpyaa_WC_AW_Alipay constructor.
+     * Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay constructor.
      */
 	private function __construct() {
-		$this->id                 = 'wpyaa_wc_aw_alipay';
-		$this->icon               = plugins_url('icon/alipay.png',WPYAA_WC_AW_FILE);
+		$this->id                 = 'wpyaa_alipay_wechat_for_woocommerce_alipay';
+		$this->icon               = plugins_url('icon/alipay.png',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE);
 		$this->has_fields         = false;
 
 		if($this->get_option ( 'refund','yes' )==='yes'){
             $this->supports         []= 'refunds';
         }
 
-		$this->method_title       = '支付宝';
-		$this->method_description = 'PC电脑端扫码支付，手机浏览器端自动唤起支付宝APP支付(对微信内置浏览器内支付做了兼容处理),订单退款。';
+		$this->method_title       =  __('支付宝',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE);
+		$this->method_description = __('PC电脑端扫码支付，手机浏览器端自动唤起支付宝APP支付(对微信内置浏览器内支付做了兼容处理),订单退款。',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE);
 
-		$this->title              = $this->get_option ( 'title','支付宝' );
+		$this->title              = $this->get_option ( 'title', __('支付宝',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE));
 		$this->description        = $this->get_option ( 'description');
 		$this->instructions       = $this->get_option('instructions');
 
@@ -64,64 +64,64 @@ class Wpyaa_WC_AW_Alipay extends WC_Payment_Gateway {
     public function init_form_fields() {
         $this->form_fields = array (
             'enabled' => array (
-                'title'       => '支付宝网关',
+                'title'       =>  __('支付宝网关',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'type'        => 'checkbox',
-                'label'       => '启用/禁用',
+                'label'       =>  __('启用/禁用',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'default'     => 'no'
             ),
             'title' => array (
-                'title'       => '标题',
+                'title'       => __('标题',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'type'        => 'text',
                 'desc_tip'    => true,
-                'default'     =>  '支付宝',
-				'description'=>'这控制用户在结帐时看到的标题。'
+                'default'     =>  __('支付宝',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
+				'description'=>__('这控制用户在结帐时看到的标题。',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)
             ),
             'description' => array (
-                'title'       => '描述',
+                'title'       => __('描述',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'desc_tip'    => true,
                 'type'        => 'textarea',
-                'description'=>'顾客支付的时候会看到关于该支付方式的说明'
+                'description'=>__('顾客支付的时候会看到关于该支付方式的说明',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)
             ),
             'instructions' => array(
-                'title'       =>'说明',
+                'title'       =>__('说明',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'type'        => 'textarea',
                 'desc_tip'    => true,
-                'description' => '说明将会被显示在订单确认页面和相关邮件中'
+                'description' => __('说明将会被显示在订单确认页面和相关邮件中',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)
             ),
             'pid' => array(
                 'title'       =>'APP ID',
                 'type'        => 'text',
-                'description'=>'您可以在<a href="https://www.wpyaa.com/post/2.html" target="_blank">帮助文档</a>内获悉如何获取配置信息'
+                'description'=>__('您可以在<a href="https://www.wpyaa.com/post/2.html" target="_blank">帮助文档</a>内获悉如何获取配置信息',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)
             ),
             'rsa_private_key' => array(
-                'title'       => '(RSA2)应用私钥',
+                'title'       => __('(RSA2)应用私钥',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'type'        => 'textarea'
             ),
             'rsa_public_key' => array(
-                'title'       => '支付宝公钥',
+                'title'       => __('支付宝公钥',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'type'        => 'textarea',
-                'description'=>'注意：请填写“支付宝公钥”,而不是开发者公钥'
+                'description'=>__('注意：请填写“支付宝公钥”,而不是开发者公钥',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)
             ),
             'phone' => array(
-                'title'       => '手机网站支付',
+                'title'       => __('手机网站支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'type'        => 'checkbox',
-                'label'       =>'启用/禁用',
+                'label'       =>__('启用/禁用',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'default'     =>'yes',
                 'disabled'    =>true,
-                'description' =>'手机浏览器内，唤起支付宝APP支付，您需要在<a href="https://b.alipay.com/signing/productSetV2.htm" target="_blank">支付宝商家中心/产品中心</a> 下开通“手机网站支付”'
+                'description' =>__('手机浏览器内，唤起支付宝APP支付，您需要在<a href="https://b.alipay.com/signing/productSetV2.htm" target="_blank">支付宝商家中心/产品中心</a> 下开通“手机网站支付”',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)
             ),
             'pc' => array(
-                'title'       => '电脑网站支付',
+                'title'       => __('电脑网站支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'type'        => 'checkbox',
-                'label'       =>'启用/禁用',
+                'label'       =>__('启用/禁用',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'default'     => 'yes',
                 'disabled'    => true,
-                'description' =>'PC电脑端，支付宝扫码支付，您需要在<a href="https://b.alipay.com/signing/productSetV2.htm" target="_blank">支付宝商家中心/产品中心</a> 下开通“电脑网站支付”'
+                'description' =>__('PC电脑端，支付宝扫码支付，您需要在<a href="https://b.alipay.com/signing/productSetV2.htm" target="_blank">支付宝商家中心/产品中心</a> 下开通“电脑网站支付”',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)
             ),
             'refund' => array(
-                'title'       => '支付宝退款',
+                'title'       => __('支付宝退款',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'type'        => 'checkbox',
-                'label'       =>'启用/禁用',
+                'label'       =>__('启用/禁用',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),
                 'default'     =>'yes'
             )
         );
@@ -130,12 +130,12 @@ class Wpyaa_WC_AW_Alipay extends WC_Payment_Gateway {
     public function process_refund( $order_id, $amount = null, $reason = ''){
         $wc_order = wc_get_order ($order_id );
         if(!$wc_order){
-            return new WP_Error( 'invalid_order','订单信息异常');
+            return new WP_Error( 'invalid_order',__('订单信息异常',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE));
         }
 
         $total = $wc_order->get_total ();
         if($amount<=0||$amount>$total){
-            return new WP_Error( 'invalid_order','退款金额超出总金额或为0' );
+            return new WP_Error( 'invalid_order',__('退款金额超出总金额或为0',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE) );
         }
 
         $args = array (
@@ -175,7 +175,7 @@ class Wpyaa_WC_AW_Alipay extends WC_Payment_Gateway {
                 throw new Exception("code:{$response['alipay_trade_refund_response']['code']},msg:{$response['alipay_trade_refund_response']['msg']};code:{$response['alipay_trade_refund_response']['sub_code']},msg:{$response['alipay_trade_refund_response']['sub_msg']}");
             }
         }catch(Exception $e){
-            wc_get_logger()->error('支付宝退款失败：',$e->getMessage());
+            wc_get_logger()->error(__('支付宝退款失败：',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),$e->getMessage());
             return new WP_Error( 'refuse_error', $e->getMessage());
         }
 
@@ -220,7 +220,7 @@ class Wpyaa_WC_AW_Alipay extends WC_Payment_Gateway {
             'result'  => 'success',
             'redirect'=> add_query_arg([
                 'id'=>$order_id
-            ],rest_url("/wpyaa/wc/aw/v1/alipay/index"))
+            ],rest_url("/wpyaa/woocommerce/alipay-wechat/v1/alipay/index"))
         );
 	}
 
@@ -230,7 +230,7 @@ class Wpyaa_WC_AW_Alipay extends WC_Payment_Gateway {
      * @return string
      */
     public static function sign($args){
-        $instance = Wpyaa_WC_AW_Alipay::instance();
+        $instance = Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay::instance();
         $res=$instance->get_option('rsa_private_key');
         if(strpos($res,'-----BEGIN RSA PRIVATE KEY-----')===false){
             $res = "-----BEGIN RSA PRIVATE KEY-----\n" .wordwrap($res, 64, "\n", true) ."\n-----END RSA PRIVATE KEY-----";
@@ -266,7 +266,7 @@ class Wpyaa_WC_AW_Alipay extends WC_Payment_Gateway {
      * @return bool
      */
     public static function validateSign(array $args){
-        $instance = Wpyaa_WC_AW_Alipay::instance();
+        $instance = Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay::instance();
         $publicKey=$instance->get_option('rsa_public_key');
 
         $sign = isset($args['sign'])?$args['sign']:null;

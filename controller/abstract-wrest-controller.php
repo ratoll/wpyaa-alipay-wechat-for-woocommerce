@@ -4,7 +4,7 @@
  * Date: 2020/9/14 17:49
  */
 defined( 'ABSPATH' ) || exit;
-abstract class Wpyaa_WC_AW_Controller extends WP_REST_Controller{
+abstract class Wpyaa_Alipay_Wechat_For_WooCommerce_Controller extends WP_REST_Controller{
     /**
      * 获取$_SERVER 相关信息
      * @param string $key
@@ -12,7 +12,7 @@ abstract class Wpyaa_WC_AW_Controller extends WP_REST_Controller{
      * @return string
      */
     public static function server($key,$default = null){
-        return isset($_SERVER[$key])?$_SERVER[$key]:$default;
+        return isset($_SERVER[$key])?sanitize_text_field($_SERVER[$key]):$default;
     }
 
     /**
@@ -48,7 +48,7 @@ abstract class Wpyaa_WC_AW_Controller extends WP_REST_Controller{
     public static function getOrderTitle($order){
         $title="#{$order->get_id()}|";
         if(!function_exists('mb_strimwidth')){
-            return apply_filters('wpyaa_wc_aw_order_title',$title,$order);
+            return apply_filters('wpyaa_alipay_wechat_for_woocommerce_order_title',$title,$order);
         }
 
         $order_items = $order->get_items();
@@ -62,7 +62,7 @@ abstract class Wpyaa_WC_AW_Controller extends WP_REST_Controller{
             }
         }
 
-        return  apply_filters('wpyaa_wc_aw_order_title',mb_strimwidth($title,0,32,'...','utf-8'),$order);
+        return  apply_filters('wpyaa_alipay_wechat_for_woocommerce_order_title',mb_strimwidth($title,0,32,'...','utf-8'),$order);
     }
 
     public static function getClientIP(){

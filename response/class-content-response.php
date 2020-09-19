@@ -4,7 +4,7 @@
  * Date: 2020/9/14 17:02
  */
 defined( 'ABSPATH' ) || exit;
-class Wpyaa_WC_AW_Content_Response extends WP_REST_Response{
+class Wpyaa_Alipay_Wechat_For_WooCommerce_Content_Response extends WP_REST_Response{
     public function __construct($content, array $headers = array()){
         parent::__construct($content, 200, $headers);
 
@@ -20,7 +20,7 @@ class Wpyaa_WC_AW_Content_Response extends WP_REST_Response{
      * @return bool
      */
     public function rest_pre_serve_request($false, $result, $request, $server){
-        if($result instanceof Wpyaa_WC_AW_Content_Response){
+        if($result instanceof Wpyaa_Alipay_Wechat_For_WooCommerce_Content_Response){
             $data = $result->get_data();
             echo $data;
             return true;

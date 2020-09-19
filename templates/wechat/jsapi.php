@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="keywords" content="">
     <meta name="description" content="">
-    <title>微信支付</title>
+    <title><?php echo __('微信支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></title>
     <style>
         *{margin:0;padding:0;}
         body{background: #f2f2f4;font-family: "Microsoft Yahei UI","Microsoft Yahei","Helvetica Neue",Helvetica,"Nimbus Sans L",Arial,"Liberation Sans","Hiragino Sans GB","Microsoft YaHei","Wenquanyi Micro Hei","WenQuanYi Zen Hei","ST Heiti",SimHei,"WenQuanYi Zen Hei Sharp",sans-serif;}
@@ -97,25 +97,28 @@
             font-size: 12px;
         }
     </style>
+    <?php
+    wp_print_scripts('jquery');
+    ?>
 </head>
 
 <body >
-<div class="xctitle"><img src="<?php echo plugins_url('icon/wechat-s.png',WPYAA_WC_AW_FILE);?>" alt="微信支付" style="vertical-align: middle"> 微信支付</div>
+<div class="xctitle"><img src="<?php echo plugins_url('icon/wechat-s.png',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE);?>" alt="<?php echo esc_attr__('微信支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>" style="vertical-align: middle"> <?php echo __('微信支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></div>
 
 <div class="xcpay">
     <div class="title"><?php echo $order['title'];?></div>
     <span class="price"><?php echo $order['amount'];?></span>
 </div>
 <div class="xcpaybt">
-    <a href="javascript:void(0);" onclick="wechat_jsapi_pay();" class="xcbtn xcbtn-green" >立即支付</a>
+    <a href="javascript:void(0);" id="btn-wechat-pay" class="xcbtn xcbtn-green" ><?php echo __('立即支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></a>
 </div>
 <div class="xcpaybt">
-    <a href="<?php echo wpyaa_ensure_woocommerce_wc_get_cart_url();?>" class="xcbtn xcbtn-border-green" >取消支付</a>
+    <a href="<?php echo esc_attr(wpyaa_ensure_woocommerce_wc_get_cart_url());?>" class="xcbtn xcbtn-border-green" ><?php echo __('取消支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></a>
 </div>
-<div class="xcfooter">“<a href="https://www.wpyaa.com">板鸭WordPress</a>”提供技术支持</div>
+<div class="xcfooter"><?php echo __('“<a href="https://www.wpyaa.com">板鸭WordPress</a>”提供技术支持',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></div>
 
 <script type="text/javascript">
-    function wechat_jsapi_pay(){
+    jQuery('#btn-wechat-pay').on('click',function (){
         WeixinJSBridge.invoke('getBrandWCPayRequest',<?php echo $order['pay_url'];?>,function(res){
             if (res.err_msg !== "get_brand_wcpay_request:ok"&&res.err_msg !== "get_brand_wcpay_request:cancel") {
                 alert(JSON.stringify(res));
@@ -124,9 +127,10 @@
             if (res.err_msg === "get_brand_wcpay_request:cancel") {
                 return;
             }
-            location.href="<?php echo $order['success_url'];?>";
+            location.href="<?php echo esc_attr($order['success_url']);?>";
         });
-    }
+    })
+
 </script>
 </body>
 </html>

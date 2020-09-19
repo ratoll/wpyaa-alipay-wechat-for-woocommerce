@@ -10,30 +10,40 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-defined('WPYAA_WC_AW_FILE')||define('WPYAA_WC_AW_FILE',__FILE__);
+defined('WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE')||define('WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE',__FILE__);
+defined('WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE')||define('WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE','wpyaa_alipay_wechat_for_woocommerce');
 
 require_once 'wc-patch.php';
 
-if(!function_exists('wpyaa_wc_aw_plugin_action_links')){
+if(!function_exists('wpyaa_alipay_wechat_for_woocommerce_plugin_action_links')){
     /**
      * 配置插件的菜单
      * @param array $links
      * @return array
      */
-    function wpyaa_wc_aw_plugin_action_links($links){
+    function wpyaa_alipay_wechat_for_woocommerce_plugin_action_links($links){
         return array_merge ( array (
-            'settings_wechat' => '<a href="' . admin_url ( 'admin.php?page=wc-settings&tab=checkout&section=wpyaa_wc_aw_wechat' ) . '">微信</a>',
-            'settings_alipay' => '<a href="' . admin_url ( 'admin.php?page=wc-settings&tab=checkout&section=wpyaa_wc_aw_alipay' ) . '">支付宝</a>'
+            'settings_wechat' => '<a href="' . admin_url ( 'admin.php?page=wc-settings&tab=checkout&section=wpyaa_alipay_wechat_for_woocommerce_wechat' ) . '">'.__('微信',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE).'</a>',
+            'settings_alipay' => '<a href="' . admin_url ( 'admin.php?page=wc-settings&tab=checkout&section=wpyaa_alipay_wechat_for_woocommerce_alipay' ) . '">'.__('支付宝',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE).'</a>'
         ), $links );
     }
 }
-add_filter ( 'plugin_action_links_'.plugin_basename( WPYAA_WC_AW_FILE ),'wpyaa_wc_aw_plugin_action_links',10,1 );
+add_filter ( 'plugin_action_links_'.plugin_basename( WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE ),'wpyaa_alipay_wechat_for_woocommerce_plugin_action_links',10,1 );
+
+if(!function_exists('wpyaa_alipay_wechat_for_woocommerce_wp_reqister_scripts')){
+    function wpyaa_alipay_wechat_for_woocommerce_wp_reqister_scripts(){
+        wp_register_script('wpyaa_alipay_wechat_for_woocommerce_jweixin','https://res.wx.qq.com/open/js/jweixin-1.6.0.js');
+        wp_register_script('wpyaa_alipay_wechat_for_woocommerce_qrcode',plugins_url('assets/js/qrcode.min.js',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE));
+    }
+}
+
+add_action('init','wpyaa_alipay_wechat_for_woocommerce_wp_reqister_scripts');
 
 /**
  * 注册页面路由
  */
-if(!function_exists('wpyaa_wc_aw_rest_api_init')){
-    function wpyaa_wc_aw_rest_api_init(){
+if(!function_exists('wpyaa_alipay_wechat_for_woocommerce_rest_api_init')){
+    function wpyaa_alipay_wechat_for_woocommerce_rest_api_init(){
         require_once 'controller/abstract-wrest-controller.php';
         require_once 'controller/class-alipay-controller.php';
         require_once 'controller/class-wechat-controller.php';
@@ -42,24 +52,24 @@ if(!function_exists('wpyaa_wc_aw_rest_api_init')){
         require_once 'response/class-content-response.php';
         require_once 'response/class-view-response.php';
 
-        (new Wpyaa_WC_AW_Alipay_Controller())->register_routes();
-        (new Wpyaa_WC_AW_Wechat_Controller())->register_routes();
+        (new Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay_Controller())->register_routes();
+        (new Wpyaa_Alipay_Wechat_For_WooCommerce_Wechat_Controller())->register_routes();
     }
 }
 
-add_action('rest_api_init','wpyaa_wc_aw_rest_api_init');
+add_action('rest_api_init','wpyaa_alipay_wechat_for_woocommerce_rest_api_init');
 
 /**
  * 初始化支付网关
  */
-if(!function_exists('wpyaa_wc_aw_woocommerce_init')){
-    function wpyaa_wc_aw_woocommerce_init(){
+if(!function_exists('wpyaa_alipay_wechat_for_woocommerce_woocommerce_init')){
+    function wpyaa_alipay_wechat_for_woocommerce_woocommerce_init(){
         require_once 'alipay.php';
         require_once 'wechat.php';
 
-        Wpyaa_WC_AW_Alipay::instance();
-        Wpyaa_WC_AW_Wechat::instance();
+        Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay::instance();
+        Wpyaa_Alipay_Wechat_For_WooCommerce_Wechat::instance();
     }
 }
 
-add_action('woocommerce_init','wpyaa_wc_aw_woocommerce_init');
+add_action('woocommerce_init','wpyaa_alipay_wechat_for_woocommerce_woocommerce_init');

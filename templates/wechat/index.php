@@ -7,7 +7,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>微信支付</title>
+    <title><?php echo __('微信支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -126,34 +126,37 @@
             }
         }
     </style>
-    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <?php
+    wp_print_scripts('jquery');
+    wp_print_scripts('wpyaa_alipay_wechat_for_woocommerce_jweixin');
+    ?>
 </head>
 <body style="padding:0;margin:0;">
 
 <div class="loading-box">
     <div class="loading"></div>
-    <div class="tips" style="margin-top:10px;">微信支付加载中...</div>
+    <div class="tips" style="margin-top:10px;"><?php echo __('微信支付加载中...',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></div>
 </div>
 <script type="text/javascript">
     (function($){
-        <?php if(Wpyaa_WC_AW_Controller::isMiniWebClient()){ ?>
+        <?php if(Wpyaa_Alipay_Wechat_For_WooCommerce_Controller::isMiniWebClient()){ ?>
 
         let ua = navigator.userAgent.toLowerCase();
         let match = ua.match(/MicroMessenger/i);
 
         var ordinaryOrQQBrowser = function(){
             //普通浏览器客户端
-            location.href='<?php echo $order['h5_url']?>';
+            location.href='<?php echo esc_attr($order['h5_url'])?>';
         };
 
         var wechatClient = function(){
             //微信内置浏览器客户端
-            location.href='<?php echo $order['jsapi_url']?>';
+            location.href='<?php echo esc_attr($order['jsapi_url'])?>';
         };
 
         var miniPropram  = function(){
             //小程序webview内
-            alert('小程序兼容，请咨询“板鸭WordPress”!')
+            alert("<?php echo esc_attr__('小程序兼容，请咨询“板鸭WordPress”!',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>" )
         };
 
 
@@ -188,7 +191,7 @@
         //普通浏览器客户端
         ordinaryOrQQBrowser();
         <?php }else{ ?>
-            location.href='<?php echo $order['qrcode_url']?>';
+            location.href='<?php echo esc_attr($order['qrcode_url'])?>';
         <?php } ?>
     })();
 </script>

@@ -4,9 +4,9 @@
  * Date: 2020/9/14 16:21
  */
 defined( 'ABSPATH' ) || exit;
-class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
+class Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay_Controller extends Wpyaa_Alipay_Wechat_For_WooCommerce_Controller
 {
-    protected $namespace = 'wpyaa/wc/aw/v1';
+    protected $namespace = 'wpyaa/woocommerce/alipay-wechat/v1';
     protected $rest_base = 'alipay';
 
     public function register_routes(){
@@ -45,28 +45,28 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
      * @return WP_REST_Response
      */
     public function index($request){
-        $orderId = $request->get_param('id');
+        $orderId = sanitize_text_field($request->get_param('id'));
         $order = wc_get_order($orderId);
         if(!$order){
-            wc_add_notice("订单信息错误！",'error');
-            return new Wpyaa_WC_AW_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
+            wc_add_notice(__("订单信息错误！",WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),'error');
+            return new Wpyaa_Alipay_Wechat_For_WooCommerce_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
         }
 
         if(wpyaa_ensure_woocommerce_order_is_paid($order)){
-            return new Wpyaa_WC_AW_Redirect_Response($order->get_checkout_order_received_url());
+            return new Wpyaa_Alipay_Wechat_For_WooCommerce_Redirect_Response($order->get_checkout_order_received_url());
         }
 
         if(!$order->needs_payment()){
-            wc_add_notice("订单金额或其他原因，无法进行支付操作！",'error');
-            return new Wpyaa_WC_AW_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
+            wc_add_notice(__("订单金额或其他原因，无法进行支付操作！",WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),'error');
+            return new Wpyaa_Alipay_Wechat_For_WooCommerce_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
         }
 
-        return new Wpyaa_WC_AW_View_Response('alipay/index.php',[
+        return new Wpyaa_Alipay_Wechat_For_WooCommerce_View_Response('alipay/index.php',[
             'order'=>[
                 'id'=>$order->get_id(),
                 'args'=>self::createOrder($order),
                 'title'=>self::getOrderTitle($order),
-                'query_url'=> add_query_arg(['id'=>$orderId ],rest_url("/wpyaa/wc/aw/v1/alipay/query")),
+                'query_url'=> add_query_arg(['id'=>$orderId ],rest_url("/wpyaa/woocommerce/alipay-wechat/v1/alipay/query")),
                 'amount'=>get_woocommerce_currency_symbol(). round($order->get_total(),2)
             ]
         ]);
@@ -78,7 +78,7 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
      * @return WP_REST_Response
      */
     public function query($request){
-        $orderId = $request->get_param('id');
+        $orderId = sanitize_text_field($request->get_param('id'));
         $order = wc_get_order($orderId);
         if(!$order){
             return new WP_REST_Response([
@@ -112,10 +112,10 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
         }
 
         //validate all query params is valid by rsa2
-        if(!Wpyaa_WC_AW_Alipay::validateSign($requestData)){
-            wc_get_logger()->error('支付宝回调：签名验证失败'.print_r($requestData,true));
-            wc_add_notice("支付宝回调：签名信息异常！",'error');
-            return new Wpyaa_WC_AW_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
+        if(!Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay::validateSign($requestData)){
+            wc_get_logger()->error(__('支付宝回调：签名验证失败',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE).print_r($requestData,true));
+            wc_add_notice(__("支付宝回调：签名信息异常！",WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),'error');
+            return new Wpyaa_Alipay_Wechat_For_WooCommerce_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
         }
 
         $out_trade_no = isset($requestData['out_trade_no'])?$requestData['out_trade_no']:null;
@@ -125,9 +125,9 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
         $wc_order_id = substr($out_trade_no,14);
         $order = wc_get_order($wc_order_id);
         if(!$order){
-            wc_get_logger()->error('支付宝回调：订单信息异常'.print_r($requestData,true));
-            wc_add_notice("支付宝回调：订单信息异常！",'error');
-            return new Wpyaa_WC_AW_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
+            wc_get_logger()->error(__('支付宝回调：订单信息异常',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE).print_r($requestData,true));
+            wc_add_notice(__("支付宝回调：订单信息异常！",WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),'error');
+            return new Wpyaa_Alipay_Wechat_For_WooCommerce_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
         }
 
         try {
@@ -135,12 +135,12 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
                 $order->payment_complete($transaction_id);
             }
         } catch (Exception $e) {
-            wc_get_logger()->error('支付宝回调：系统异常'.$e->getMessage().print_r($requestData,true));
-            wc_add_notice("支付宝回调：系统异常！",'error');
-            return new Wpyaa_WC_AW_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
+            wc_get_logger()->error(__('支付宝回调：系统异常',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE).$e->getMessage().print_r($requestData,true));
+            wc_add_notice(__("支付宝回调：系统异常！",WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE),'error');
+            return new Wpyaa_Alipay_Wechat_For_WooCommerce_Redirect_Response(wpyaa_ensure_woocommerce_wc_get_cart_url());
         }
 
-        return new Wpyaa_WC_AW_Redirect_Response($order->get_checkout_order_received_url());
+        return new Wpyaa_Alipay_Wechat_For_WooCommerce_Redirect_Response($order->get_checkout_order_received_url());
     }
 
     /**
@@ -157,9 +157,9 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
         }
 
         //validate all query params is valid by rsa2
-        if(!Wpyaa_WC_AW_Alipay::validateSign($requestData)){
-            wc_get_logger()->error('支付宝回调：签名验证失败'.print_r($requestData,true));
-            return new Wpyaa_WC_AW_Content_Response('failed');
+        if(!Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay::validateSign($requestData)){
+            wc_get_logger()->error(__('支付宝回调：签名验证失败',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE).print_r($requestData,true));
+            return new Wpyaa_Alipay_Wechat_For_WooCommerce_Content_Response('failed');
         }
 
         $out_trade_no = isset($requestData['out_trade_no'])?$requestData['out_trade_no']:null;
@@ -169,8 +169,8 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
         $wc_order_id = substr($out_trade_no,14);
         $order = wc_get_order($wc_order_id);
         if(!$order){
-            wc_get_logger()->error('支付宝回调：订单信息异常'.print_r($requestData,true));
-            return new Wpyaa_WC_AW_Content_Response('failed');
+            wc_get_logger()->error(__('支付宝回调：订单信息异常',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE).print_r($requestData,true));
+            return new Wpyaa_Alipay_Wechat_For_WooCommerce_Content_Response('failed');
         }
 
         try {
@@ -178,11 +178,11 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
                 $order->payment_complete($transaction_id);
             }
         } catch (Exception $e) {
-            wc_get_logger()->error('支付宝回调：系统异常'.$e->getMessage().print_r($requestData,true));
-            return new Wpyaa_WC_AW_Content_Response('failed');
+            wc_get_logger()->error(__('支付宝回调：系统异常',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE).$e->getMessage().print_r($requestData,true));
+            return new Wpyaa_Alipay_Wechat_For_WooCommerce_Content_Response('failed');
         }
 
-        return new Wpyaa_WC_AW_Content_Response('success');
+        return new Wpyaa_Alipay_Wechat_For_WooCommerce_Content_Response('success');
     }
 
     /**
@@ -191,7 +191,7 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
      * @return array
      */
     public static function createOrder($order){
-        $gateway = Wpyaa_WC_AW_Alipay::instance();
+        $gateway = Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay::instance();
 
         $args = array (
             'app_id' =>$gateway->get_option('pid'),
@@ -201,8 +201,8 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
             'sign_type'=>'RSA2',
             'timestamp'=>date_i18n('Y-m-d H:i:s'),
             'version'=>'1.0',
-            'notify_url' => rest_url('/wpyaa/wc/aw/v1/alipay/notify'),
-            'return_url' => rest_url('/wpyaa/wc/aw/v1/alipay/back'),
+            'notify_url' => rest_url('/wpyaa/woocommerce/alipay-wechat/v1/alipay/notify'),
+            'return_url' => rest_url('/wpyaa/woocommerce/alipay-wechat/v1/alipay/back'),
             'biz_content'=>json_encode(array(
                 'product_code'=>self::isMiniWebClient()?'QUICK_WAP_WAY':'FAST_INSTANT_TRADE_PAY',
                 'out_trade_no'=>date_i18n('YmdHis').$order->get_id(),
@@ -211,7 +211,7 @@ class Wpyaa_WC_AW_Alipay_Controller extends Wpyaa_WC_AW_Controller
             ),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)
         );
 
-        $args['sign'] = Wpyaa_WC_AW_Alipay::sign($args);
+        $args['sign'] = Wpyaa_Alipay_Wechat_For_WooCommerce_Alipay::sign($args);
         return $args;
     }
 }

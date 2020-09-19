@@ -14,7 +14,7 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style" />
     <meta content="telephone=no" name="format-detection" />
     <meta charset="UTF-8">
-    <title>微信支付</title>
+    <title><?php echo __('微信支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></title>
     <style type="text/css">
         /*基础样式*/
         html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video, input { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
@@ -130,13 +130,15 @@
             }
         }
     </style>
-    <script type="text/javascript" src="<?php echo home_url('/wp-includes/js/jquery/jquery.js'); ?>"></script>
+    <?php
+    wp_print_scripts('jquery');
+    ?>
 </head>
 <body>
 
 <div class="loading-box">
     <div class="loading"></div>
-    <div class="tips" style="margin-top:10px;">微信支付结果确认中...</div>
+    <div class="tips" style="margin-top:10px;"><?php echo __('微信支付结果确认中...',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></div>
 </div>
 <script type="text/javascript">
     (function ($) {
@@ -144,12 +146,12 @@
         function queryOrderStatus() {
             times++;
             if(times>10){
-                location.href = <?php echo $order['fail_url']?>;
+                location.href = '<?php echo esc_attr($order['fail_url'])?>';
                 return;
             }
             $.ajax({
                 type: 'post',
-                url: "<?php echo $order['query_url'];?>",
+                url: "<?php echo esc_attr($order['query_url']);?>",
                 timeout:6000,
                 cache:false,
                 dataType:'json',

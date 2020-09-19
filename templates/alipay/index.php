@@ -8,11 +8,11 @@ defined( 'ABSPATH' ) || exit;WP_CONTENT_DIR
 <!doctype html>
 <html>
 <head>
-    <title>支付宝</title>
+    <title><?php echo __('支付宝',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <script type="text/javascript" src="<?php echo home_url('/wp-includes/js/jquery/jquery.js'); ?>"></script>
+
     <style type="text/css">
         *{margin:0;padding:0;}
         body{background: #f2f2f4;font-family: "Microsoft Yahei UI","Microsoft Yahei","Helvetica Neue",Helvetica,"Nimbus Sans L",Arial,"Liberation Sans","Hiragino Sans GB","Microsoft YaHei","Wenquanyi Micro Hei","WenQuanYi Zen Hei","ST Heiti",SimHei,"WenQuanYi Zen Hei Sharp",sans-serif;}
@@ -89,9 +89,12 @@ defined( 'ABSPATH' ) || exit;WP_CONTENT_DIR
 
         }
     </style>
+    <?php
+    wp_print_scripts('jquery');
+    ?>
 </head>
 <body  style="padding:0;margin:0;">
-<?php if(!Wpyaa_WC_AW_Controller::isMiniWebClient()){ ?>
+<?php if(!Wpyaa_Alipay_Wechat_For_WooCommerce_Controller::isMiniWebClient()){ ?>
     <form id="main-form" action="https://openapi.alipay.com/gateway.do?charset=utf-8" method="POST">
         <?php foreach ($order['args'] as $k=>$v){
             ?><input type="hidden" name="<?php echo esc_attr($k)?>" value="<?php echo esc_attr($v)?>"/><?php
@@ -102,17 +105,17 @@ defined( 'ABSPATH' ) || exit;WP_CONTENT_DIR
     </script>
 <?php }else{ ?>
     <div id="isWechatClient" style="display:none;">
-        <?php  if(Wpyaa_WC_AW_Controller::isIOSClient()){?>
-            <img alt="支付宝" src="<?php echo plugins_url('icon/ios.png',WPYAA_WC_AW_FILE);?>" style="max-width: 100%;">
+        <?php  if(Wpyaa_Alipay_Wechat_For_WooCommerce_Controller::isIOSClient()){?>
+            <img alt="<?php echo esc_attr__('支付宝',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>)" src="<?php echo plugins_url('icon/ios.png',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE);?>" style="max-width: 100%;">
         <?php }else{ ?>
-            <img alt="支付宝" src="<?php echo plugins_url('icon/android.png',WPYAA_WC_AW_FILE);?>" style="max-width: 100%;">
+            <img alt="<?php echo esc_attr__('支付宝',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>)" src="<?php echo plugins_url('icon/android.png',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE);?>" style="max-width: 100%;">
             <?php
         }
         ?>
     </div>
 
     <div id="isNotWechatClient" style="display:none;">
-        <div class="xctitle"><img src="<?php echo plugins_url('icon/alipay-s.png',WPYAA_WC_AW_FILE);?>" alt="支付宝" style="vertical-align: middle"> 支付宝</div>
+        <div class="xctitle"><img src="<?php echo plugins_url('icon/alipay-s.png',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE);?>" alt="<?php echo esc_attr__('支付宝',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>)" style="vertical-align: middle"> <?php echo __('支付宝',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>)</div>
         <div class="xcpay ">
             <div class="title"><?php echo $order['title'];?></div>
             <span class="price"><?php echo $order['amount'];?></span>
@@ -123,13 +126,13 @@ defined( 'ABSPATH' ) || exit;WP_CONTENT_DIR
                 <?php foreach ($order['args'] as $k=>$v){
                     ?><input type="hidden" name="<?php echo esc_attr($k)?>" value="<?php echo esc_attr($v)?>"/><?php
                 }?>
-                <button type="submit" class="xcbtn xcbtn-green" style="width: 100%;background:#0AE!important;border-color:#0AE!important;">立即支付</button>
+                <button type="submit" class="xcbtn xcbtn-green" style="width: 100%;background:#0AE!important;border-color:#0AE!important;"><?php echo __('立即支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>)</button>
             </form>
         </div>
         <div class="xcpaybt">
-            <a href="<?php echo wpyaa_ensure_woocommerce_wc_get_cart_url();?>" class="xcbtn xcbtn-border-green"  style="color: #0AE!important;border-color: #0AE!important;">取消支付</a>
+            <a href="<?php echo wpyaa_ensure_woocommerce_wc_get_cart_url();?>" class="xcbtn xcbtn-border-green"  style="color: #0AE!important;border-color: #0AE!important;"><?php echo __('取消支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>)</a>
         </div>
-        <div class="xcfooter">“<a href="https://www.wpyaa.com">板鸭WordPress</a>”提供技术支持</div>
+        <div class="xcfooter"><?php echo __('“<a href="https://www.wpyaa.com">板鸭WordPress</a>”提供技术支持',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></div>
     </div>
 
     <script type="text/javascript">
@@ -152,7 +155,7 @@ defined( 'ABSPATH' ) || exit;WP_CONTENT_DIR
             function queryOrderStatus() {
                 $.ajax({
                     type: 'post',
-                    url: '<?php echo $order['query_url'];?>',
+                    url: '<?php echo esc_attr($order['query_url']);?>',
                     timeout:6000,
                     cache:false,
                     dataType:'json',

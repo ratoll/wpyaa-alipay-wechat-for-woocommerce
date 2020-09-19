@@ -12,8 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="keywords" content="">
     <meta name="description" content="">
-    <script type="text/javascript" src="<?php echo home_url('/wp-includes/js/jquery/jquery.js'); ?>"></script>
-    <title>微信支付</title>
+
+    <title><?php echo __('微信支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></title>
     <style>
         *{margin:0;padding:0;}
         body{background: #f2f2f4;}
@@ -52,32 +52,37 @@
             .xcfooter{position: absolute;bottom:10px;left:0;text-align:center;width:100%;font-size:12px;}
         }
     </style>
+    <?php
+    wp_print_scripts('jquery');
+    wp_print_scripts('wpyaa_alipay_wechat_for_woocommerce_qrcode');
+    ?>
 </head>
 <body >
-<div class="xctitle">微信支付</div>
+<div class="xctitle"><?php echo __('微信支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></div>
 <div class="qrbox clearfix">
     <div class="left">
         <div class="qrcon">
-            <h5><img src="<?php echo plugins_url('icon/wechat-s.png',WPYAA_WC_AW_FILE);?>" alt="微信支付"></h5>
+            <h5><img src="<?php echo plugins_url('icon/wechat-s.png',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE);?>" alt="<?php echo esc_attr__('微信支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>"></h5>
             <div class="title"><?php echo $order['title'];?></div>
             <div class="price"><?php echo $order['amount'];?></div>
             <div align="center" style="position:relative;">
-                <img src="<?php echo $order['pay_url'];?>" style="width: 230px;height: 230px;margin-bottom: 10px;" alt="微信支付" />
+                <div id="img-qrcode" style="width: 230px;height: 230px;margin-bottom: 10px;" title="<?php echo esc_attr__('微信支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>" ></div>
             </div>
             <div class="bottom">
-                打开微信扫一扫<br/>扫描二维码完成支付
+                <?php echo __('打开微信扫一扫',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?><br/><?php echo __('扫描二维码完成支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>
             </div>
         </div>
     </div>
-    <div class="sys"><img src="<?php echo plugins_url('icon/wechat-scan-qrcode.png',WPYAA_WC_AW_FILE);?>" alt="微信支付"></div>
+    <div class="sys"><img src="<?php echo plugins_url('icon/wechat-scan-qrcode.png',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE);?>" alt="<?php echo esc_attr__('扫描二维码完成支付',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?>"></div>
 </div>
-<div class="xcfooter">“<a href="https://www.wpyaa.com">板鸭WordPress</a>”提供技术支持</div>
+<div class="xcfooter"><?php echo __('“<a href="https://www.wpyaa.com">板鸭WordPress</a>”提供技术支持',WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCEE)?></div>
 <script type="text/javascript">
     (function ($) {
+        new QRCode(document.getElementById("img-qrcode"), "<?php echo esc_attr($order['pay_url']);?>");
         function queryOrderStatus() {
             $.ajax({
                 type: 'post',
-                url: "<?php echo $order['query_url'];?>",
+                url: "<?php echo esc_attr($order['query_url']);?>",
                 timeout:6000,
                 cache:false,
                 dataType:'json',

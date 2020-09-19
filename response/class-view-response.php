@@ -4,7 +4,7 @@
  * Date: 2020/9/14 17:02
  */
 defined( 'ABSPATH' ) || exit;
-class Wpyaa_WC_AW_View_Response extends WP_REST_Response{
+class Wpyaa_Alipay_Wechat_For_WooCommerce_View_Response extends WP_REST_Response{
     public function __construct($template = null, $assigns = [], array $headers = array()){
         parent::__construct([
             'template'=>$template,
@@ -23,16 +23,16 @@ class Wpyaa_WC_AW_View_Response extends WP_REST_Response{
      * @return bool
      */
     public function rest_pre_serve_request($false, $result, $request, $server){
-        if($result instanceof Wpyaa_WC_AW_View_Response){
+        if($result instanceof Wpyaa_Alipay_Wechat_For_WooCommerce_View_Response){
             $data = $result->get_data();
             $template = ltrim($data['template'],'/');
             $assigns = $data['assigns'];
             extract($assigns,EXTR_OVERWRITE);
-            $themeTemplate = get_template_directory().'/'.current((explode('/', plugin_basename(WPYAA_WC_AW_FILE)))).'/'.$template;
+            $themeTemplate = get_template_directory().'/'.current((explode('/', plugin_basename(WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE)))).'/'.$template;
             if(file_exists($themeTemplate)){
                 require $themeTemplate;
             }else{
-                require plugin_dir_path(WPYAA_WC_AW_FILE).'templates/'.$template;
+                require plugin_dir_path(WPYAA_ALIPAY_WECHAT_FOR_WOOCOMMERCE_FILE).'templates/'.$template;
             }
             return true;
         }
